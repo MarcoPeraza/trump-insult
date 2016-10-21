@@ -22,7 +22,7 @@ insults = [
   "%s is mathematically dead and totally desperate.",
   "%s, I will sue him just for fun",
   "%s should be forced to take an IQ test",
-  "Little %s",
+  "Little %s, pathetic!",
   "%s only makes bad deals!"
 ]
 
