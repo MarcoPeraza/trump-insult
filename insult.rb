@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'json'
 
 post '/insult' do
   content_type :json
