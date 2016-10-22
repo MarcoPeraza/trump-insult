@@ -50,7 +50,7 @@ post '/insult' do
                           {
                             fallback: insult,
                             text: insult,
-                            image_url: url(pic)
+                            image_url: url(pic),
                             color: "#d83924"
                           }
                         ]
