@@ -45,11 +45,13 @@ post '/insult' do
 
   HTTParty.post(params[:response_url],
                 body: { response_type: "in_channel",
-                        text: insult,
                         link_names: "1",
                         attachments: [
                           {
+                            fallback: insult,
+                            text: insult,
                             image_url: url(pic)
+                            color: "#d83924"
                           }
                         ]
                       }.to_json,
