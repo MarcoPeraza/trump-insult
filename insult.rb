@@ -34,6 +34,8 @@ post '/insult' do
     halt 403, "Incorrect slack token"
   end
 
+  channel = (params[:channel_name] != 'privategroup') ? params[:channel_name] : "#{params[:team_domain]} channel"
+
   insult = insult_templates.sample % { target: params[:text],
                                        channel: params[:channel_name],
                                        caller: params[:user_name] }
