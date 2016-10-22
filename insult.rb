@@ -29,5 +29,7 @@ insults = [
 
 post '/insult' do
   HTTParty.post(params[:response_url],
-                body: { response_type: "in_channel", text: insults.sample % params[:text] }.to_json)
+                body: { response_type: "in_channel", text: insults.sample % params[:text] }.to_json,
+                headers: { "Content-Type" => "application/json" })
+  status 200
 end
