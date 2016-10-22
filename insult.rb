@@ -48,7 +48,7 @@ post '/insult' do
                         text: insult,
                         attachments: [
                           {
-                            image_url: url('/pic')
+                            image_url: url(pic)
                           }
                         ]
                       }.to_json,
