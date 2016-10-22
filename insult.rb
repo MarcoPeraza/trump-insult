@@ -40,7 +40,7 @@ post '/insult' do
                                        channel: channel,
                                        caller: params[:user_name] }
 
-  pic = File.join('public/pics',
+  pic = File.join('pics',
                   Dir.entries('public/pics').select { |f| f=~ /.*\.jpg/ }.sample)
 
   HTTParty.post(params[:response_url],
