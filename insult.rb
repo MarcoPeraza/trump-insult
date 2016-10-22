@@ -25,7 +25,7 @@ insult_templates = [
   #"%{target} should be forced to take an IQ test",
   #"Little %{target}, pathetic!",
   #"%{target} only makes bad deals!",
-  "%{target} is unattractive both inside and out. I fully understand why her former husband left her for a man- he made a good decision.",
+  #"%{target} is unattractive both inside and out. I fully understand why her former husband left her for a man- he made a good decision.",
   "Just heard that crazy and very dumb %{target} had a mental breakdown while talking about me on the low ratings %{channel}. What a mess!"
 ]
 
@@ -34,10 +34,10 @@ post '/insult' do
     halt 403, "Incorrect slack token"
   end
 
-  channel = (params[:channel_name] != 'privategroup') ? params[:channel_name] : "#{params[:team_domain]} channel"
+  channel = (params[:channel_name] != 'privategroup') ? "\##{params[:channel_name]}" : "#{params[:team_domain]} channel"
 
   insult = insult_templates.sample % { target: params[:text],
-                                       channel: params[:channel_name],
+                                       channel: channel,
                                        caller: params[:user_name] }
 
   HTTParty.post(params[:response_url],
