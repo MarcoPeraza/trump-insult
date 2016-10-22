@@ -28,6 +28,10 @@ insults = [
 ]
 
 post '/insult' do
+  if params[:token] != ENV["SLACK_VERIFY_TOKEN"]
+    halt 403, "Incorrect slack token"
+  end
+
   HTTParty.post(params[:response_url],
                 body: { response_type: "in_channel", text: insults.sample % params[:text] }.to_json,
                 headers: { "Content-Type" => "application/json" })
