@@ -4,11 +4,11 @@ require 'httparty'
 
 insults = [
   "%s, such a dishonest person.",
-  "%s suffer from BAD JUDGEMENT.",
+  "%s suffers from BAD JUDGEMENT.",
   "%s has been failing for 30 years",
   "%s, not getting the job done.",
   "%s has failed all over the world.",
-  "%s doesn't have the strength of the stamina to MAKE AMERICA GREAT AGAIN!.",
+  "%s doesn't have the strength or the stamina to MAKE AMERICA GREAT AGAIN!.",
   "%s's brainpower is highly overrated, decision making is so bad.",
   "%s is all talk and NO ACTION",
   "%s just wants to shut down and go home to bed",
