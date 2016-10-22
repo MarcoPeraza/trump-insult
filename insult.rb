@@ -40,8 +40,18 @@ post '/insult' do
                                        channel: channel,
                                        caller: params[:user_name] }
 
+  pic = File.join('public/pics',
+                  Dir.entries('public/pics').select { |f| f=~ /.*\.jpg/ }.sample)
+
   HTTParty.post(params[:response_url],
-                body: { response_type: "in_channel", text: insult }.to_json,
+                body: { response_type: "in_channel",
+                        text: insult,
+                        attachments: [
+                          {
+                            image_url: url('/pic')
+                          }
+                        ]
+                      }.to_json,
                 headers: { "Content-Type" => "application/json" })
   status 200
 end
