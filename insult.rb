@@ -2,30 +2,31 @@ require 'sinatra'
 require 'json'
 require 'httparty'
 
-insults = [
-  "%s, such a dishonest person.",
-  "%s suffers from BAD JUDGEMENT.",
-  "%s has been failing for 30 years",
-  "%s, not getting the job done.",
-  "%s has failed all over the world.",
-  "%s doesn't have the strength or the stamina to MAKE AMERICA GREAT AGAIN!.",
-  "%s's brainpower is highly overrated, decision making is so bad.",
-  "%s is all talk and NO ACTION",
-  "%s just wants to shut down and go home to bed",
-  "%s has no energy left.",
-  "%s, very sad!",
-  "%s is a low energy individual",
-  "%s gave up and enlisted Mommy and his brother",
-  "%s is a pathetic figure!",
-  "%s had to bring mommy to take a slap at me",
-  "%s, he's bottom (and gone), I'm top (by a lot).",
-  "%s is really pathetic.",
-  "%s is mathematically dead and totally desperate.",
-  "%s, I will sue him just for fun",
-  "%s should be forced to take an IQ test",
-  "Little %s, pathetic!",
-  "%s only makes bad deals!",
-  "%s is unattractive both inside and out. I fully understand why her former husband left her for a man- he made a good decision."
+insult_templates = [
+  #"%{target}, such a dishonest person.",
+  #"%{target} suffers from BAD JUDGEMENT.",
+  #"%{target} has been failing for 30 years",
+  #"%{target}, not getting the job done.",
+  #"%{target} has failed all over the world.",
+  #"%{target} doesn't have the strength or the stamina to MAKE AMERICA GREAT AGAIN!.",
+  #"%{target}'s brainpower is highly overrated, decision making is so bad.",
+  #"%{target} is all talk and NO ACTION",
+  #"%{target} just wants to shut down and go home to bed",
+  #"%{target} has no energy left.",
+  #"%{target}, very sad!",
+  #"%{target} is a low energy individual",
+  #"%{target} gave up and enlisted Mommy and his brother",
+  #"%{target} is a pathetic figure!",
+  #"%{target} had to bring mommy to take a slap at me",
+  #"%{target}, he's bottom (and gone), I'm top (by a lot).",
+  #"%{target} is really pathetic.",
+  #"%{target} is mathematically dead and totally desperate.",
+  #"%{target}, I will sue him just for fun",
+  #"%{target} should be forced to take an IQ test",
+  #"Little %{target}, pathetic!",
+  #"%{target} only makes bad deals!",
+  "%{target} is unattractive both inside and out. I fully understand why her former husband left her for a man- he made a good decision.",
+  "Just heard that crazy and very dumb %{target} had a mental breakdown while talking about me on the low ratings %{channel}. What a mess!"
 ]
 
 post '/insult' do
@@ -33,8 +34,12 @@ post '/insult' do
     halt 403, "Incorrect slack token"
   end
 
+  insult = insult_templates.sample % { target: params[:text],
+                                       channel: params[:channel_name],
+                                       caller: params[:user_name] }
+
   HTTParty.post(params[:response_url],
-                body: { response_type: "in_channel", text: insults.sample % params[:text] }.to_json,
+                body: { response_type: "in_channel", text: insult }.to_json,
                 headers: { "Content-Type" => "application/json" })
   status 200
 end
