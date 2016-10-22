@@ -46,7 +46,7 @@ post '/insult' do
   HTTParty.post(params[:response_url],
                 body: { response_type: "in_channel",
                         text: insult,
-                        link_names: 1,
+                        link_names: "1",
                         attachments: [
                           {
                             image_url: url(pic)
