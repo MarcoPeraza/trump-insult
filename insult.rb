@@ -24,7 +24,8 @@ insults = [
   "%s, I will sue him just for fun",
   "%s should be forced to take an IQ test",
   "Little %s, pathetic!",
-  "%s only makes bad deals!"
+  "%s only makes bad deals!",
+  "%s is unattractive both inside and out. I fully understand why her former husband left her for a man- he made a good decision."
 ]
 
 post '/insult' do
