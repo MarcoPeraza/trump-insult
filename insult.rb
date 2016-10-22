@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'json'
+require 'httparty'
 
 insults = [
   "%s, such a dishonest person.",
@@ -27,6 +28,7 @@ insults = [
 ]
 
 post '/insult' do
-  content_type :json
-  { response_type: "in_channel", text: insults.sample % params[:text] }.to_json
+  HTTParty.post(params[:response_url],
+                body: { response_type: "in_channel", text: insults.sample % params[:text] }.to_json,
+                headers: { "Content-Type" => "application/json" })
 end
