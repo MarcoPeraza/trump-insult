@@ -29,6 +29,23 @@ insult_templates = [
   "Just heard that crazy and very dumb %{target} had a mental breakdown while talking about me on the low ratings %{channel}. What a mess!"
 ]
 
+post '/event' do
+  request.body.rewind
+
+  raw_body = request.body.read
+  puts raw_body
+
+  event = JSON.parse(raw_body)
+
+  case event['type']
+  when "url_verification"
+    content_type :json
+    return {challenge: event['challenge']}.to_json
+  end
+
+  return 200
+end
+
 post '/insult' do
   if params[:token] != ENV["SLACK_VERIFY_TOKEN"]
     halt 403, "Incorrect slack token"
@@ -40,8 +57,8 @@ post '/insult' do
                                        channel: channel,
                                        caller: params[:user_name] }
 
-  pic = File.join('pics',
-                  Dir.entries('public/pics').select { |f| f=~ /.*\.jpg/ }.sample)
+  pic_url = url(File.join('pics',
+                          Dir.entries('public/pics').select { |f| f =~ /.*\.jpg/ }.sample))
 
   HTTParty.post(params[:response_url],
                 body: { response_type: "in_channel",
@@ -50,7 +67,7 @@ post '/insult' do
                           {
                             fallback: insult,
                             text: insult,
-                            image_url: url(pic),
+                            image_url: pic_url,
                             color: "#d83924"
                           }
                         ]
