@@ -51,7 +51,8 @@ post '/event' do
 end
 
 post '/interact' do
-
+  body = JSON.parse(params[:body])
+  puts body
 end
 
 post '/insult' do
@@ -79,6 +80,7 @@ post '/insult' do
                             fallback: 'Error: Your Slack client does not support the necessary features',
                             text: 'Choose a kind of insult',
                             color: '#d83924',
+                            callback_id: 'insult_callback',
                             actions: [
                               {
                                 name: 'weak',
