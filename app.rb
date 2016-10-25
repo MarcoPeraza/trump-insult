@@ -43,7 +43,7 @@ get '/oauth' do
 end
 
 get '/authorize' do
-  redirect "https://slack.com/oauth/authorize?client_id=#{ENV[SLACK_CLIENT_ID]}&scope=channels:history"
+  redirect "https://slack.com/oauth/authorize?client_id=#{ENV['SLACK_CLIENT_ID']}&scope=channels:history"
 end
 
 post '/event' do
