@@ -4,44 +4,8 @@ require './environments'
 require 'json'
 require 'httparty'
 
-class User < ActiveRecord::Base
-  validates_uniqueness_of :user_id
-  validates_presence_of :user_id
-  validates_presence_of :access_token
-end
-
-class Bot < ActiveRecord::Base
-  validates_uniqueness_of :user_id
-  validates_presence_of :user_id
-  validates_presence_of :access_token
-end
-
-insult_templates = [
-  "%{target}, such a dishonest person.",
-  "%{target} suffers from BAD JUDGEMENT.",
-  "%{target} has been failing for 30 years",
-  "%{target}, not getting the job done.",
-  "%{target} has failed all over the world.",
-  "%{target} doesn't have the strength or the stamina to MAKE AMERICA GREAT AGAIN!.",
-  "%{target}'s brainpower is highly overrated, decision making is so bad.",
-  "%{target} is all talk and NO ACTION",
-  "%{target} just wants to shut down and go home to bed",
-  "%{target} has no energy left.",
-  "%{target}, very sad!",
-  "%{target} is a low energy individual",
-  "%{target} gave up and enlisted Mommy and his brother",
-  "%{target} is a pathetic figure!",
-  "%{target} had to bring mommy to take a slap at me",
-  "%{target}, he's bottom (and gone), I'm top (by a lot).",
-  "%{target} is really pathetic.",
-  "%{target} is mathematically dead and totally desperate.",
-  "%{target}, I will sue him just for fun",
-  "%{target} should be forced to take an IQ test",
-  "Little %{target}, pathetic!",
-  "%{target} only makes bad deals!",
-  "%{target} is unattractive both inside and out. I fully understand why her former husband left her for a man- he made a good decision.",
-  "Just heard that crazy and very dumb %{target} had a mental breakdown while talking about me on the low ratings %{channel}. What a mess!"
-]
+require './models'
+require './insults'
 
 get '/oauth' do
   result = HTTParty.post('https://slack.com/api/oauth.access',
@@ -86,6 +50,10 @@ post '/event' do
   return 200
 end
 
+post '/interact' do
+
+end
+
 post '/insult' do
   if params[:ssl_check] == '1'
     halt 200
@@ -105,18 +73,29 @@ post '/insult' do
                           Dir.entries('public/pics').select { |f| f =~ /.*\.jpg/ }.sample))
 
   HTTParty.post(params[:response_url],
-                body: { response_type: "in_channel",
-                        username: "Donald J. Trump",
-                        link_names: "1",
+                body: {
                         attachments: [
                           {
-                            fallback: insult,
-                            text: insult,
-                            image_url: pic_url,
-                            color: "#d83924"
+                            fallback: 'Error: Your Slack client does not support the necessary features',
+                            text: 'Choose a kind of insult',
+                            color: '#d83924',
+                            actions: [
+                              {
+                                name: 'weak',
+                                text: 'Weak',
+                                type: 'button',
+                                value: 'weak'
+                              },
+                              {
+                                name: 'loser',
+                                text: 'Loser',
+                                type: 'button',
+                                value: 'loser'
+                              }
+                            ]
                           }
                         ]
                       }.to_json,
-                headers: { "Content-Type" => "application/json" })
+                headers: { 'Content-Type' => 'application/json' })
   status 200
 end
