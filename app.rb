@@ -57,7 +57,7 @@ post '/interact' do
   action_name, action_value = payload['actions'][0]['name'], payload['actions'][0]['value'] if payload['actions'] && payload['actions'][0]
 
   case payload['callback_id']
-  when 'insult_callbck'
+  when 'insult_callback'
 
     channel = if (payload['channel']['name'] != 'privategroup')
                 "\##{payload['channel']['name']}"
@@ -90,6 +90,7 @@ post '/interact' do
                   headers: { 'Content-Type' => 'application/json' })
   end
 
+  status 200
 end
 
 post '/insult' do
