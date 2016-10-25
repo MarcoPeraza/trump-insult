@@ -4,6 +4,18 @@ require './environments'
 require 'json'
 require 'httparty'
 
+class User < ActiveRecord::Base
+  validates_uniqueness_of :user_id
+  validates_presence_of :user_id
+  validates_presence_of :access_token
+end
+
+class Bot < ActiveRecord::Base
+  validates_uniqueness_of :user_id
+  validates_presence_of :user_id
+  validates_presence_of :access_token
+end
+
 insult_templates = [
   "%{target}, such a dishonest person.",
   "%{target} suffers from BAD JUDGEMENT.",
@@ -38,6 +50,18 @@ get '/oauth' do
                             client_secret: ENV['SLACK_CLIENT_SECRET'],
                             code: params['code']
                          })
+
+  user = User.find_or_create_by(user_id: result['user_id'],
+                                team_id: result['team_id'])
+  user.access_token = result['access_token']
+  user.scope = result['scope']
+  user.save
+
+  bot = Bot.find_or_create_by(user_id: result['bot']['bot_user_id'],
+                              team_id: result['team_id'])
+  bot.access_token = result['bot']['bot_access_token']
+  bot.save
+
   puts result.response.body
 end
 
@@ -47,14 +71,16 @@ end
 
 post '/event' do
   request.body.rewind
-
   raw_body = request.body.read
   puts raw_body
-
   data = JSON.parse(raw_body)
 
+  if data['token'] != ENV['SLACK_VERIFY_TOKEN']
+    halt 403, 'Incorrect slack token'
+  end
+
   case data['type']
-  when "url_verification"
+  when 'url_verification'
     content_type :json
     return {challenge: data['challenge']}.to_json
   end
