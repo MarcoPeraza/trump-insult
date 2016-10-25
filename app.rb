@@ -62,8 +62,6 @@ get '/oauth' do
   bot.access_token = result['bot']['bot_access_token']
   bot.scope = result['scope']
   bot.save
-
-  puts result.response.body
 end
 
 get '/authorize' do
@@ -73,7 +71,6 @@ end
 post '/event' do
   request.body.rewind
   raw_body = request.body.read
-  puts raw_body
   data = JSON.parse(raw_body)
 
   if data['token'] != ENV['SLACK_VERIFY_TOKEN']
@@ -90,8 +87,6 @@ post '/event' do
 end
 
 post '/insult' do
-  puts params
-
   if params[:ssl_check] == '1'
     halt 200
   end
