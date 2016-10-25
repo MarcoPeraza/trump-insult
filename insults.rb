@@ -1,4 +1,4 @@
-insult_templates = [
+InsultTemplates = [
   "%{target}, such a dishonest person.",
   "%{target} suffers from BAD JUDGEMENT.",
   "%{target} has been failing for 30 years",
