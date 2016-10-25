@@ -37,8 +37,7 @@ get '/oauth' do
                             client_id: ENV['SLACK_CLIENT_ID'],
                             client_secret: ENV['SLACK_CLIENT_SECRET'],
                             code: params['code']
-                         }.to_json,
-                         headers: { "Content-Type" => "application/json" })
+                         })
   puts result.response.body
 end
 
