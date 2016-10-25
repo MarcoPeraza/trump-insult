@@ -52,7 +52,49 @@ end
 
 post '/interact' do
   payload = JSON.parse(params[:payload])
-  puts payload
+
+  action_name, action_value =
+          if payload['actions'] && payload['actions'][0]
+            payload['actions'][0]['name'], payload['actions'][0]['value']
+          else
+            nil, nil
+          end
+
+
+  case payload['callback_id']
+  when 'insult_callbck'
+
+    channel = if (payload['channel']['name'] != 'privategroup')
+                "\##{payload['channel']['name']}"
+              else
+                "that #{payload['team'['domain']} channel"
+              end
+
+    pic_url = url(File.join('pics',
+                            Dir.entries('public/pics').select { |f| f =~ /.*\.jpg/ }.sample))
+
+    insult = InsultTemplates[action_name].sample % { target: action_value,
+                                                     channel: payload['channel']['name'],
+                                                     caller: payload['user']['name'] }
+
+    HTTParty.post(payload['response_url'],
+                  body: {
+                    delete_original: true,
+                    response_type: "in_channel",
+                    username: 'Donald J. Trump',
+                    link_names: '1',
+                    attachments: [
+                      {
+                        fallback: insult,
+                        text: insult,
+                        image_url: pic_url,
+                        color: '#d83924'
+                      }
+                    ]
+                  }.to_json,
+                  headers: { 'Content-Type' => 'application/json' })
+  end
+
 end
 
 post '/insult' do
@@ -64,14 +106,8 @@ post '/insult' do
     halt 403, "Incorrect slack token"
   end
 
-  channel = (params[:channel_name] != 'privategroup') ? "\##{params[:channel_name]}" : "#{params[:team_domain]} channel"
+  target = params[:text]
 
-  insult = InsultTemplates.sample % { target: params[:text],
-                                       channel: channel,
-                                       caller: params[:user_name] }
-
-  pic_url = url(File.join('pics',
-                          Dir.entries('public/pics').select { |f| f =~ /.*\.jpg/ }.sample))
 
   HTTParty.post(params[:response_url],
                 body: {
@@ -79,21 +115,31 @@ post '/insult' do
                           {
                             fallback: 'Error: Your Slack client does not support the necessary features',
                             text: 'Choose a kind of insult',
-                            color: '#d83924',
                             callback_id: 'insult_callback',
                             actions: [
                               {
-                                name: 'weak',
-                                text: 'Weak',
+                                name: 'low_energy',
+                                text: 'Low Energy',
                                 type: 'button',
-                                value: 'weak'
+                                value: target
                               },
                               {
                                 name: 'loser',
                                 text: 'Loser',
                                 type: 'button',
-                                value: 'loser'
-                              }
+                                value: target
+                              },
+                              {
+                                name: 'dishonest',
+                                text: 'Dishonest',
+                                type: 'button',
+                                value: target
+                              },
+                              {
+                                name: 'dumb',
+                                text: 'Very Dumb',
+                                type: 'button',
+                                value: target
                             ]
                           }
                         ]
