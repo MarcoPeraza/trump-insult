@@ -60,6 +60,7 @@ get '/oauth' do
   bot = Bot.find_or_create_by(user_id: result['bot']['bot_user_id'],
                               team_id: result['team_id'])
   bot.access_token = result['bot']['bot_access_token']
+  bot.scope = result['scope']
   bot.save
 
   puts result.response.body
@@ -89,6 +90,7 @@ post '/event' do
 end
 
 post '/insult' do
+  puts params
   if params[:token] != ENV["SLACK_VERIFY_TOKEN"]
     halt 403, "Incorrect slack token"
   end
