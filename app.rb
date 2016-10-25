@@ -1,4 +1,6 @@
 require 'sinatra'
+require 'sinatra/activerecord'
+require './environments'
 require 'json'
 require 'httparty'
 
@@ -29,18 +31,33 @@ insult_templates = [
   "Just heard that crazy and very dumb %{target} had a mental breakdown while talking about me on the low ratings %{channel}. What a mess!"
 ]
 
+get '/oauth' do
+  result = HTTParty.post('https://slack.com/api/oauth.access',
+                         body: {
+                            client_id: ENV['SLACK_CLIENT_ID'],
+                            client_secret: ENV['SLACK_CLIENT_SECRET'],
+                            code: params['code']
+                         }.to_json,
+                         headers: { "Content-Type" => "application/json" })
+  puts result.response.body
+end
+
+get '/authorize' do
+  redirect "https://slack.com/oauth/authorize?client_id=#{ENV[SLACK_CLIENT_ID]}&scope=channels:history"
+end
+
 post '/event' do
   request.body.rewind
 
   raw_body = request.body.read
   puts raw_body
 
-  event = JSON.parse(raw_body)
+  data = JSON.parse(raw_body)
 
-  case event['type']
+  case data['type']
   when "url_verification"
     content_type :json
-    return {challenge: event['challenge']}.to_json
+    return {challenge: data['challenge']}.to_json
   end
 
   return 200

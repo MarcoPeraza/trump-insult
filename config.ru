@@ -1,2 +1,6 @@
-require './insult.rb'
+require './app.rb'
+
+# Outputs stdout to heroku logs
+$stdout.sync = true
+
 run Sinatra::Application
