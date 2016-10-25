@@ -111,6 +111,7 @@ post '/insult' do
 
   HTTParty.post(params[:response_url],
                 body: { response_type: "in_channel",
+                        username: "Donald J. Trump",
                         link_names: "1",
                         attachments: [
                           {
