@@ -52,14 +52,9 @@ end
 
 post '/interact' do
   payload = JSON.parse(params[:payload])
+  puts payload
 
-  action_name, action_value =
-          if payload['actions'] && payload['actions'][0]
-            payload['actions'][0]['name'], payload['actions'][0]['value']
-          else
-            nil, nil
-          end
-
+  action_name, action_value = payload['actions'][0]['name'], payload['actions'][0]['value'] if payload['actions'] && payload['actions'][0]
 
   case payload['callback_id']
   when 'insult_callbck'
@@ -67,7 +62,7 @@ post '/interact' do
     channel = if (payload['channel']['name'] != 'privategroup')
                 "\##{payload['channel']['name']}"
               else
-                "that #{payload['team'['domain']} channel"
+                "that #{payload['team']['domain']} channel"
               end
 
     pic_url = url(File.join('pics',
