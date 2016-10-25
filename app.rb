@@ -51,8 +51,8 @@ post '/event' do
 end
 
 post '/interact' do
-  body = JSON.parse(params[:body])
-  puts body
+  payload = JSON.parse(params[:payload])
+  puts payload
 end
 
 post '/insult' do
