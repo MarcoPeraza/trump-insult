@@ -135,6 +135,7 @@ post '/insult' do
                                 text: 'Very Dumb',
                                 type: 'button',
                                 value: target
+                              }
                             ]
                           }
                         ]
