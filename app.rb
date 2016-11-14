@@ -7,6 +7,11 @@ require 'httparty'
 require './models'
 require './insults'
 
+def random_pic_path
+  File.join('pics', Dir.entries('public/pics').select { |f| f =~ /.*\.jpg/ }.sample)
+
+end
+
 get '/oauth' do
   result = HTTParty.post('https://slack.com/api/oauth.access',
                          body: {
@@ -65,11 +70,8 @@ post '/interact' do
                 "that #{payload['team']['domain']} channel"
               end
 
-    pic_url = url(File.join('pics',
-                            Dir.entries('public/pics').select { |f| f =~ /.*\.jpg/ }.sample))
-
     insult = InsultTemplates[action_name].sample % { target: action_value,
-                                                     channel: payload['channel']['name'],
+                                                     channel: channel,
                                                      caller: payload['user']['name'] }
 
     HTTParty.post(payload['response_url'],
@@ -82,7 +84,7 @@ post '/interact' do
                       {
                         fallback: insult,
                         text: insult,
-                        image_url: pic_url,
+                        image_url: url(random_pic_path),
                         color: '#d83924'
                       }
                     ]
