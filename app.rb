@@ -1,6 +1,5 @@
 require 'sinatra/base'
 require 'sinatra/activerecord'
-require './environments'
 require 'json'
 require 'httparty'
 
