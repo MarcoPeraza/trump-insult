@@ -10,7 +10,7 @@ def random_pic_path
   File.join('pics', Dir.entries('public/pics').select { |f| f =~ /.*\.jpg/ }.sample)
 end
 
-class TrumpEndPoints < Sinatra::Application
+class TrumpEndpoints < Sinatra::Application
   register Sinatra::ActiveRecordExtension
 
   configure :development do
