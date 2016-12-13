@@ -166,22 +166,4 @@ class TrumpEndpoints < Sinatra::Application
     status 200
   end
 
-  #post '/milo' do
-  #  if params[:ssl_check] == '1'
-  #    halt 200
-  #  end
-
-  #  if params[:token] != ENV["SLACK_VERIFY_TOKEN"]
-  #    halt 403, "Incorrect slack token"
-  #  end
-
-  #  case params[:text].strip.downcase
-  #  when 'on'
-  #    
-  #  when 'off'
-
-  #  end
-
-  #end
-
 end
