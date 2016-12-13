@@ -41,17 +41,15 @@ class TrumpEndpoints < Sinatra::Application
 
     puts result
 
-    user = User.find_or_create_by(user_id: result['user_id'],
-                                  team_id: result['team_id'])
-    user.access_token = result['access_token']
-    user.scope = result['scope']
-    user.save
+    i = Integration.find_or_create_by(team_id: result['team_id'],
+                                      user_id: result['user_id'])
+    i.user_token = result['access_token']
+    i.bot_token = result['bot']['bot_access_token']
+    i.scope = result['scope']
 
-    bot = Bot.find_or_create_by(user_id: result['bot']['bot_user_id'],
-                                team_id: result['team_id'])
-    bot.access_token = result['bot']['bot_access_token']
-    bot.scope = result['scope']
-    bot.save
+    i.save
+
+    status 200
   end
 
   get '/authorize' do
@@ -167,5 +165,23 @@ class TrumpEndpoints < Sinatra::Application
                   headers: { 'Content-Type' => 'application/json' })
     status 200
   end
+
+  #post '/milo' do
+  #  if params[:ssl_check] == '1'
+  #    halt 200
+  #  end
+
+  #  if params[:token] != ENV["SLACK_VERIFY_TOKEN"]
+  #    halt 403, "Incorrect slack token"
+  #  end
+
+  #  case params[:text].strip.downcase
+  #  when 'on'
+  #    
+  #  when 'off'
+
+  #  end
+
+  #end
 
 end
