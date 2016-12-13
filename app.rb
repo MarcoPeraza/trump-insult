@@ -39,6 +39,8 @@ class TrumpEndpoints < Sinatra::Application
                               code: params['code']
                           })
 
+    puts result
+
     user = User.find_or_create_by(user_id: result['user_id'],
                                   team_id: result['team_id'])
     user.access_token = result['access_token']
