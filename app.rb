@@ -53,7 +53,7 @@ class TrumpEndpoints < Sinatra::Application
   end
 
   get '/authorize' do
-    redirect "https://slack.com/oauth/authorize?client_id=#{ENV['SLACK_CLIENT_ID']}&scope=incoming-webhook channels:history channels:write channels:read files:read files:write:user groups:history groups:read groups:write users:read bot commands"
+    redirect "https://slack.com/oauth/authorize?client_id=#{ENV['SLACK_CLIENT_ID']}&scope=channels:history channels:write channels:read files:read files:write:user groups:history groups:read groups:write users:read bot commands"
   end
 
   post '/event' do
@@ -86,7 +86,7 @@ class TrumpEndpoints < Sinatra::Application
       channel = if (payload['channel']['name'] != 'privategroup')
                   "\##{payload['channel']['name']}"
                 else
-                  "that #{payload['team']['domain']} channel"
+                  "#{payload['team']['domain']} channel"
                 end
 
       insult = InsultTemplates[action_name].sample % { target: action_value,
