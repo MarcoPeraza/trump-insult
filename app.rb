@@ -157,6 +157,12 @@ class TrumpEndpoints < Sinatra::Application
                                   text: 'Very Dumb',
                                   type: 'button',
                                   value: target
+                                },
+                                {
+                                  name: 'dog',
+                                  text: 'Dog',
+                                  type: 'button',
+                                  value: target
                                 }
                               ]
                             }
