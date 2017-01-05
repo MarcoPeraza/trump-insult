@@ -33,11 +33,11 @@ class TrumpEndpoints < Sinatra::Application
 
   get '/oauth' do
     result = HTTParty.post('https://slack.com/api/oauth.access',
-                          body: {
-                              client_id: ENV['SLACK_CLIENT_ID'],
-                              client_secret: ENV['SLACK_CLIENT_SECRET'],
-                              code: params['code']
-                          })
+                           body: {
+                             client_id: ENV['SLACK_CLIENT_ID'],
+                             client_secret: ENV['SLACK_CLIENT_SECRET'],
+                             code: params['code']
+                           })
 
     puts result
 
@@ -90,8 +90,8 @@ class TrumpEndpoints < Sinatra::Application
                 end
 
       insult = InsultTemplates[action_name].sample % { target: action_value,
-                                                      channel: channel,
-                                                      caller: payload['user']['name'] }
+                                                       channel: channel,
+                                                       caller: payload['user']['name'] }
 
       HTTParty.post(payload['response_url'],
                     body: {
@@ -130,15 +130,15 @@ class TrumpEndpoints < Sinatra::Application
 
     HTTParty.post(params[:response_url],
                   body: {
-                          attachments: [
-                            {
-                              fallback: 'Error: Your Slack client does not support the necessary features',
-                              text: 'Choose a kind of insult',
-                              callback_id: 'insult_callback',
-                              actions: actions
-                            }
-                          ]
-                        }.to_json,
+                    attachments: [
+                      {
+                        fallback: 'Error: Your Slack client does not support the necessary features',
+                        text: 'Choose a kind of insult',
+                        callback_id: 'insult_callback',
+                        actions: actions
+                      }
+                    ]
+                  }.to_json,
                   headers: { 'Content-Type' => 'application/json' })
     status 200
   end
