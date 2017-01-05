@@ -126,6 +126,7 @@ class TrumpEndpoints < Sinatra::Application
 
     target = params[:text]
 
+    actions = InsultTemplates.keys.map { |k| { name: k, text: k, type: 'button', value: target } }
 
     HTTParty.post(params[:response_url],
                   body: {
@@ -134,38 +135,7 @@ class TrumpEndpoints < Sinatra::Application
                               fallback: 'Error: Your Slack client does not support the necessary features',
                               text: 'Choose a kind of insult',
                               callback_id: 'insult_callback',
-                              actions: [
-                                {
-                                  name: 'low_energy',
-                                  text: 'Low Energy',
-                                  type: 'button',
-                                  value: target
-                                },
-                                {
-                                  name: 'loser',
-                                  text: 'Loser',
-                                  type: 'button',
-                                  value: target
-                                },
-                                {
-                                  name: 'dishonest',
-                                  text: 'Dishonest',
-                                  type: 'button',
-                                  value: target
-                                },
-                                {
-                                  name: 'dumb',
-                                  text: 'Very Dumb',
-                                  type: 'button',
-                                  value: target
-                                },
-                                {
-                                  name: 'dog',
-                                  text: 'Dog',
-                                  type: 'button',
-                                  value: target
-                                }
-                              ]
+                              actions: actions
                             }
                           ]
                         }.to_json,

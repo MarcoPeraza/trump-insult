@@ -1,5 +1,5 @@
 InsultTemplates = {
-  'low_energy' => [
+  'Low Energy' => [
     "%{target} doesn't have the strength or the stamina to MAKE AMERICA GREAT AGAIN!.",
     "%{target} has no energy left.",
     "%{target}, very sad!",
@@ -11,7 +11,7 @@ InsultTemplates = {
     "%{target} is unattractive both inside and out. I fully understand why her former husband left her for a man- he made a good decision.",
   ],
 
-  'loser' => [
+  'Loser' => [
     "%{target} has been failing for 30 years",
     "%{target} has failed all over the world.",
     "%{target} gave up and enlisted Mommy and his brother",
@@ -23,12 +23,12 @@ InsultTemplates = {
     "%{target}, he's bottom (and gone), I'm top (by a lot).",
   ],
 
-  'dishonest' => [
+  'Dishonest' => [
     "%{target}, such a dishonest person.",
     "%{target}, I will sue him just for fun",
   ],
 
-  'dumb' => [
+  'Very Dumb' => [
     "%{target} suffers from BAD JUDGEMENT.",
     "%{target}'s brainpower is highly overrated, decision making is so bad.",
     "%{target} should be forced to take an IQ test",
@@ -36,7 +36,7 @@ InsultTemplates = {
     "Just heard that crazy and very dumb %{target} had a mental breakdown while talking about me on the low ratings %{channel}. What a mess!",
   ],
 
-  'dog' => [
+  'Dog' => [
     "%{target}, one of the %{channel} lightweights, came to my office begging for money like a dog. Why doesn't he say that?",
     "%{target} got fired like a dog. He is failing and he wanted to have me on his show. I said no - because he is irrelevant",
     "Wow, great news! I hear %{target} was fired like a dog. If you read his posts, you'll understand why. Just doesn't have IT!",
