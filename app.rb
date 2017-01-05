@@ -104,7 +104,8 @@ class TrumpEndpoints < Sinatra::Application
                           fallback: insult,
                           text: insult,
                           image_url: url(random_pic_path),
-                          color: '#d83924'
+                          color: '#d83924',
+                          mrkdwn_in: ['text']
                         }
                       ]
                     }.to_json,
