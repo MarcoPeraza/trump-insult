@@ -27,9 +27,7 @@ def extract_username(s)
 end
 
 def kick_and_readd_user(username, channel_id, token)
-  puts "up here"
   user_id = get_user_id(username, token)
-  puts "user_id: #{user_id}"
 
   HTTParty.post('https://slack.com/api/groups.kick',
                 body: {
@@ -38,7 +36,7 @@ def kick_and_readd_user(username, channel_id, token)
                   user: user_id,
                 })
 
-  sleep 20
+  sleep 10
 
   HTTParty.post('https://slack.com/api/groups.invite',
                 body: {
@@ -76,8 +74,6 @@ class TrumpEndpoints < Sinatra::Application
                              client_secret: ENV['SLACK_CLIENT_SECRET'],
                              code: params['code']
                            })
-
-    puts result
 
     i = Integration.find_or_create_by(team_id: result['team_id'],
                                       user_id: result['user_id'])
@@ -154,9 +150,11 @@ class TrumpEndpoints < Sinatra::Application
                     headers: { 'Content-Type' => 'application/json' })
 
       if targetname = extract_username(action_value)
-        i = Integration.find_by(team_id: payload['team']['id'])
-        token = i.bot_token.to_s
-        kick_and_readd_user(targetname, payload['channel']['id'], token)
+        Thread.new do
+          i = Integration.find_by(team_id: payload['team']['id'])
+          token = i.user_token.to_s
+          kick_and_readd_user(targetname, payload['channel']['id'], token)
+        end
       end
     end
 
