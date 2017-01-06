@@ -27,7 +27,9 @@ def extract_username(s)
 end
 
 def kick_and_readd_user(username, channel_id, token)
+  puts "up here"
   user_id = get_user_id(username, token)
+  puts "user_id: #{user_id}"
 
   HTTParty.post('https://slack.com/api/groups.kick',
                 body: {
@@ -151,12 +153,9 @@ class TrumpEndpoints < Sinatra::Application
                     }.to_json,
                     headers: { 'Content-Type' => 'application/json' })
 
-      puts "out here"
       if targetname = extract_username(action_value)
-        puts "in here"
         i = Integration.find_by(team_id: payload['team']['id'])
         token = i.bot_token.to_s
-        puts "token: #{token}"
         kick_and_readd_user(targetname, payload['channel']['id'], token)
       end
     end
