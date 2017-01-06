@@ -149,13 +149,14 @@ class TrumpEndpoints < Sinatra::Application
                     }.to_json,
                     headers: { 'Content-Type' => 'application/json' })
 
-      if targetname = extract_username(action_value)
-        Thread.new do
-          i = Integration.find_by(team_id: payload['team']['id'])
-          token = i.user_token.to_s
-          kick_and_readd_user(targetname, payload['channel']['id'], token)
-        end
-      end
+      ## Feature disabled
+      #if targetname = extract_username(action_value)
+      #  Thread.new do
+      #    i = Integration.find_by(team_id: payload['team']['id'])
+      #    token = i.user_token.to_s
+      #    kick_and_readd_user(targetname, payload['channel']['id'], token)
+      #  end
+      #end
     end
 
     status 200
