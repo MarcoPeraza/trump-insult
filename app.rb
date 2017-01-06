@@ -10,6 +10,42 @@ def random_pic_path
   File.join('pics', Dir.entries('public/pics').select { |f| f =~ /.*\.jpg/ }.sample)
 end
 
+def get_user_id(username, token)
+  user_list_resp = HTTParty.post('https://slack.com/api/users.list',
+                                 body: { token: token })
+  user_list = JSON.parse(user_list_resp.body)["members"]
+
+  user = user_list.find { |u| u["name"] == username }
+
+  return user["id"]
+end
+
+def extract_username(s)
+  if s =~ /@(\w+)/
+    return $1
+  end
+end
+
+def kick_and_readd_user(username, channel_id, token)
+  user_id = get_user_id(username, token)
+
+  HTTParty.post('https://slack.com/api/groups.kick',
+                body: {
+                  token: token,
+                  channel: channel_id,
+                  user: user_id,
+                })
+
+  sleep 20
+
+  HTTParty.post('https://slack.com/api/groups.invite',
+                body: {
+                  token: token,
+                  channel: channel_id,
+                  user: user_id,
+                })
+end
+
 class TrumpEndpoints < Sinatra::Application
   register Sinatra::ActiveRecordExtension
 
@@ -114,6 +150,12 @@ class TrumpEndpoints < Sinatra::Application
                       ]
                     }.to_json,
                     headers: { 'Content-Type' => 'application/json' })
+
+      if targetname = extract_username(action_value)
+        i = Integration.find_by(team_id: payload['team']['id'])
+        token = i.bot_token.to_s
+        kick_and_readd_user(targetname, payload['channel']['id'], token)
+      end
     end
 
     status 200
