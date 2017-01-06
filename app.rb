@@ -78,6 +78,10 @@ class TrumpEndpoints < Sinatra::Application
     payload = JSON.parse(params[:payload])
     puts payload
 
+    if !payload || payload['token'] != ENV["SLACK_VERIFY_TOKEN"]
+      halt 403, "Incorrect slack token"
+    end
+
     action_name, action_value = payload['actions'][0]['name'], payload['actions'][0]['value'] if payload['actions'] && payload['actions'][0]
 
     case payload['callback_id']
