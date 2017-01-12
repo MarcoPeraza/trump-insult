@@ -143,7 +143,8 @@ class TrumpEndpoints < Sinatra::Application
                           text: insult,
                           image_url: url(random_pic_path),
                           color: '#d83924',
-                          mrkdwn_in: ['text']
+                          mrkdwn_in: ['text'],
+                          footer: payload['user']['name']
                         }
                       ]
                     }.to_json,
