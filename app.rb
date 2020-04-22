@@ -1,12 +1,10 @@
 require 'sinatra/base'
-require 'sinatra/activerecord'
 require 'json'
 require 'httparty'
 
-require './db'
 require './insults'
 
-#  ENV['DATABASE_URL'])
+# Three environment variables are consulted:
 #  ENV['SLACK_CLIENT_ID'],
 #  ENV['SLACK_CLIENT_SECRET'],
 #  ENV["SLACK_VERIFY_TOKEN"]
@@ -15,63 +13,7 @@ def random_pic_path
   File.join('pics', Dir.entries('public/pics').select { |f| f =~ /.*\.jpg/ }.sample)
 end
 
-def get_user_id(username, token)
-  user_list_resp = HTTParty.post('https://slack.com/api/users.list',
-                                 body: { token: token })
-  user_list = JSON.parse(user_list_resp.body)["members"]
-
-  user = user_list.find { |u| u["name"] == username }
-
-  return user["id"]
-end
-
-def extract_username(s)
-  if s =~ /@(\w+)/
-    return $1
-  end
-end
-
-def kick_and_readd_user(username, channel_id, token)
-  user_id = get_user_id(username, token)
-
-  HTTParty.post('https://slack.com/api/groups.kick',
-                body: {
-                  token: token,
-                  channel: channel_id,
-                  user: user_id,
-                })
-
-  sleep 10
-
-  HTTParty.post('https://slack.com/api/groups.invite',
-                body: {
-                  token: token,
-                  channel: channel_id,
-                  user: user_id,
-                })
-end
-
 class TrumpEndpoints < Sinatra::Application
-  register Sinatra::ActiveRecordExtension
-
-  configure :development do
-    set :database, 'sqlite3:db/dev.db'
-    set :show_exceptions, true
-  end
-
-  configure :production do
-    db = URI.parse(ENV['DATABASE_URL'] || 'postgres:///localhost/mydb')
-
-    ActiveRecord::Base.establish_connection(
-      :adapter  => db.scheme == 'postgres' ? 'postgresql' : db.scheme,
-      :host     => db.host,
-      :username => db.user,
-      :password => db.password,
-      :database => db.path[1..-1],
-      :encoding => 'utf8'
-    )
-  end
-
   get '/oauth' do
     result = HTTParty.post('https://slack.com/api/oauth.access',
                            body: {
@@ -79,14 +21,6 @@ class TrumpEndpoints < Sinatra::Application
                              client_secret: ENV['SLACK_CLIENT_SECRET'],
                              code: params['code']
                            })
-
-    i = Integration.find_or_create_by(team_id: result['team_id'],
-                                      user_id: result['user_id'])
-    i.user_token = result['access_token']
-    i.bot_token = result['bot']['bot_access_token']
-    i.scope = result['scope']
-
-    i.save
 
     status 200
   end
@@ -155,13 +89,6 @@ class TrumpEndpoints < Sinatra::Application
                     }.to_json,
                     headers: { 'Content-Type' => 'application/json' })
 
-      if targetname = extract_username(action_value)
-        Thread.new do
-          i = Integration.find_by(team_id: payload['team']['id'])
-          token = i.user_token.to_s
-          kick_and_readd_user(targetname, payload['channel']['id'], token)
-        end
-      end
     end
 
     status 200
