@@ -6,6 +6,11 @@ require 'httparty'
 require './db'
 require './insults'
 
+#  ENV['DATABASE_URL'])
+#  ENV['SLACK_CLIENT_ID'],
+#  ENV['SLACK_CLIENT_SECRET'],
+#  ENV["SLACK_VERIFY_TOKEN"]
+
 def random_pic_path
   File.join('pics', Dir.entries('public/pics').select { |f| f =~ /.*\.jpg/ }.sample)
 end
